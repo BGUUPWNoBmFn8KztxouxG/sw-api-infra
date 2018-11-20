@@ -22,8 +22,6 @@ Once infra job is finished:
 7. Repeat steps 1 to 6 for `staging` and `production` app.
 8. Run the `update-metric-keys` job in concourse.
 
-By the time you're done with adding the metric keys, the deployment of application should have succeeded.
-
 ## Tasks done
 - Docker
     - Pipeline builds and deploys to Heroku with docker image
