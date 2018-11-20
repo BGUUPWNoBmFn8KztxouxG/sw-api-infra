@@ -20,7 +20,8 @@ Once infra job is finished:
 5. Find the carbon url (graphite host) and copy it
 6. Paste it into `graphite_carbon_ci` in `credentials.yml`.
 7. Repeat steps 1 to 6 for `staging` and `production` app.
-8. Run the `update-metric-keys` job in concourse.
+8. While in sw-api-infra, run `fly -t <TARGET> sp -p swapi_pipeline -c concourse/pipeline.yml -l credentials.yml`
+9. Run the `update-metric-keys` job in concourse.
 
 ## Tasks done
 - Docker
