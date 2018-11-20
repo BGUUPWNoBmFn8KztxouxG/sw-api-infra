@@ -7,6 +7,7 @@
 5. While in the sw-api-infra, run the following command (assuming concourse is properly set up):
 
 `fly -t <TARGET> -p swapi_pipeline -c concourse/pipeline.yaml -l credentials.yml`
+
 _This pipeline was tested with concourse v4.2.1._
 
 After unpausing the pipeline, both the infrastructure and application jobs should start automatically.
