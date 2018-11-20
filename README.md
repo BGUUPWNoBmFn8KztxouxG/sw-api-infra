@@ -10,7 +10,7 @@
 
 _This pipeline was tested with concourse v4.2.1._
 
-After unpausing the pipeline, both the infrastructure and application jobs should start automatically.
+After unpausing the pipeline, build job should start automatically. Manually trigger the infra job.
 
 Once infra job is finished:
 1. Log into heroku
