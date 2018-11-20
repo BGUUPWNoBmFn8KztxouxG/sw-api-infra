@@ -1,0 +1,39 @@
+platform: linux
+image_resource:
+  type: docker-image
+  source:
+    repository: wingrunr21/alpine-heroku-cli
+    tag: "latest"
+
+params:
+  heroku_email:
+  heroku_api_key:
+  heroku_app_name:
+  graphite_carbon_ci:
+  graphite_carbon_stage:
+  graphite_carbon_prod:
+  logzio_api_key_ci:
+  logzio_api_key_stage:
+  logzio_api_key_prod:
+
+run:
+  path: sh
+  dir: .
+  args:
+    - -exc
+    - |
+      cat > /root/.netrc <<EOF
+      machine api.heroku.com
+        login ${heroku_email}
+        password ${heroku_api_key}
+      machine git.heroku.com
+        login ${heroku_email}
+        password ${heroku_api_key}
+      EOF
+      export HEROKU_API_KEY=${heroku_api_key}
+      heroku config:set GRAPHITE_HOST=${graphite_carbon_ci} -a ${heroku_app_name}-ci
+      heroku config:set GRAPHITE_HOST=${graphite_carbon_stage} -a ${heroku_app_name}-staging
+      heroku config:set GRAPHITE_HOST=${graphite_carbon_prod} -a ${heroku_app_name}-production
+      heroku config:set LOGZIO_API_KEY=${logzio_api_key_ci} -a ${heroku_app_name}-ci
+      heroku config:set LOGZIO_API_KEY=${logzio_api_key_stage} -a ${heroku_app_name}-staging
+      heroku config:set LOGZIO_API_KEY=${logzio_api_key_prod} -a ${heroku_app_name}-production

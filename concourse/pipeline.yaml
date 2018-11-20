@@ -1,0 +1,88 @@
+jobs:
+
+- name: build
+  plan:
+  - aggregate:
+    - get: application
+      trigger: true
+    - get: infrastructure
+  - task: build-app-image
+    file: infrastructure/concourse/app/build.yml
+    input_mapping: {source: application, infra: infrastructure}
+  - put: docker-image-app
+    params:
+      build: docker
+
+- name: deploy-ci
+  plan:
+  - aggregate:
+    - get: infrastructure
+    - get: docker-image-app
+      trigger: true
+      passed: [build]
+  - task: deploy_image
+    file: infrastructure/concourse/app/deploy.yml
+    input_mapping: {source: application}
+    params:
+      heroku_email: ((heroku_email))
+      heroku_api_key: ((heroku_api_key))
+      heroku_app_name: ((heroku_app_name))-ci
+
+- name: infra
+  plan:
+  - aggregate:
+    - get: infrastructure
+  - task: apply
+    file: infrastructure/concourse/terraform/task.yml
+    input_mapping: {source: infrastructure}
+    params:
+      github_token: ((github_token))
+      heroku_api_key: ((heroku_api_key))
+      heroku_email: ((heroku_email))
+      statuscake_api_key: ((statuscake_api_key))
+      command: apply
+      directories: |
+          terraform
+  - put: infrastructure
+    params:
+      repository: with-state
+      rebase: true
+
+- name: update-metric-keys
+  plan:
+  - aggregate:
+    - get: infrastructure
+      passed: [infra]
+  - task: update_heroku_config
+    file: infrastructure/concourse/app/update_heroku_config.yml
+    input_mapping: {source: infrastructure}
+    params:
+      heroku_email: ((heroku_email))
+      heroku_api_key: ((heroku_api_key))
+      heroku_app_name: ((heroku_app_name))
+      graphite_carbon_ci: ((graphite_carbon_ci))
+      graphite_carbon_stage: ((graphite_carbon_stage))
+      graphite_carbon_prod: ((graphite_carbon_prod))
+      logzio_api_key_ci: ((logzio_api_key_ci))
+      logzio_api_key_stage: ((logzio_api_key_stage))
+      logzio_api_key_prod: ((logzio_api_key_prod))
+
+resources:
+- name: infrastructure
+  type: git
+  source:
+    uri: ((infrastructure_git_source))
+    branch: master
+    private_key: ((deploy_infra_key))
+- name: application
+  type: git
+  source:
+    uri: ((application_git_source))
+    branch: master
+    private_key: ((deploy_app_key))
+- name: docker-image-app
+  type: docker-image
+  source:
+    repository: registry.heroku.com/((heroku_app_name))-ci/web
+    username: ((heroku_email))
+    password: ((heroku_api_key))

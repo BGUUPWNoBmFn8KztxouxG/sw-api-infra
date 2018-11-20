@@ -1,0 +1,3 @@
+credentials.yaml
+terraform/.terraform/
+terraform/terraform.tfstate.backup
