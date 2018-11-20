@@ -6,7 +6,7 @@
 4. In sw-api-infra, edit the `terraform/variables.tf` file with desired application name (must match the one supplied in credentials.yml) and pipeline name. `Do not` append or prefix -ci, -staging or -production to the application name.
 5. While in the sw-api-infra, run the following command (assuming concourse is properly set up):
 
-`fly -t <TARGET> -p swapi_pipeline -c concourse/pipeline.yml -l credentials.yml`
+`fly -t <TARGET> sp -p swapi_pipeline -c concourse/pipeline.yml -l credentials.yml`
 
 _This pipeline was tested with concourse v4.2.1._
 
