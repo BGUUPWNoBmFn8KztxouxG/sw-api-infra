@@ -28,6 +28,18 @@ jobs:
       heroku_api_key: ((heroku_api_key))
       heroku_app_name: ((heroku_app_name))-ci
 
+- name: restart-app
+  plan:
+  - aggregate:
+    - get: infrastructure
+      passed: [deploy-ci]
+    - task: restart-app
+      file: infrastructure/concourse/app/restart-app.yml
+      params:
+        heroku_email: ((heroku_email))
+        heroku_api_key: ((heroku_api_key))
+        heroku_app_name: ((heroku_app_name))-ci
+
 - name: infra
   plan:
   - aggregate:
@@ -55,7 +67,6 @@ jobs:
       passed: [infra]
   - task: update_heroku_config
     file: infrastructure/concourse/app/update_heroku_config.yml
-    input_mapping: {source: infrastructure}
     params:
       heroku_email: ((heroku_email))
       heroku_api_key: ((heroku_api_key))
