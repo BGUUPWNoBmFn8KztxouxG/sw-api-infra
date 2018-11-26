@@ -1,0 +1,28 @@
+platform: linux
+image_resource:
+  type: docker-image
+  source:
+    repository: wingrunr21/alpine-heroku-cli
+    tag: "latest"
+
+params:
+  heroku_email:
+  heroku_api_key:
+  heroku_app_name:
+
+run:
+  path: sh
+  dir: .
+  args:
+    - -exc
+    - |
+      cat > /root/.netrc <<EOF
+      machine api.heroku.com
+        login ${heroku_email}
+        password ${heroku_api_key}
+      machine git.heroku.com
+        login ${heroku_email}
+        password ${heroku_api_key}
+      EOF
+      export HEROKU_API_KEY=${heroku_api_key}
+      heroku ps:restart -a ${heroku_app_name}
