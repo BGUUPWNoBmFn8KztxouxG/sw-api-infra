@@ -28,17 +28,17 @@ jobs:
       heroku_api_key: ((heroku_api_key))
       heroku_app_name: ((heroku_app_name))-ci
 
-- name: restart-app
+- name: restart-ci-app
   plan:
   - aggregate:
     - get: infrastructure
-      passed: [deploy-ci]
-    - task: restart-app
-      file: infrastructure/concourse/app/restart-app.yml
-      params:
-        heroku_email: ((heroku_email))
-        heroku_api_key: ((heroku_api_key))
-        heroku_app_name: ((heroku_app_name))-ci
+      passed: [infra]
+  - task: restart_ci_app
+    file: infrastructure/concourse/app/restart-app.yml
+    params:
+      heroku_email: ((heroku_email))
+      heroku_api_key: ((heroku_api_key))
+      heroku_app_name: ((heroku_app_name))-ci
 
 - name: infra
   plan:
