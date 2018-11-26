@@ -22,7 +22,7 @@ Once infra job is finished:
 7. Repeat steps 1 to 6 for `staging` and `production` app.
 8. While in sw-api-infra, run `fly -t <TARGET> sp -p swapi_pipeline -c concourse/pipeline.yml -l credentials.yml`
 9. Run the `update-metric-keys` job in concourse.
-    NOTE: If the update-metric-keys and build finishes around the same time, the application will fail to start due to it not picking up the environment variables. If this is the case, run the `restart-ci-app` job.
+    - NOTE: If the update-metric-keys and build finishes around the same time, the application will fail to start due to it not picking up the environment variables. If this is the case, run the `restart-ci-app` job.
 10. Go to root page of web application for further instructions.
 
 ## Tasks done
