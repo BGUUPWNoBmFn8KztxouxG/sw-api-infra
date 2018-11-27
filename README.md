@@ -4,6 +4,7 @@
 2. In sw-api-infra, edit the credentials_example.yml file with your information. Leave `graphite_carbon_X` empty.
 3. Rename the file to credentials.yml.
 4. In sw-api-infra, edit the `terraform/variables.tf` file with desired application name (must match the one supplied in credentials.yml) and pipeline name. `Do not` append or prefix -ci, -staging or -production to the application name.
+6. In sw-api-infra, edit the `terraform/statuscake.tf` file and add your username.
 5. While in the sw-api-infra, run the following command (assuming concourse is properly set up):
 
 `fly -t <TARGET> sp -p swapi_pipeline -c concourse/pipeline.yml -l credentials.yml`
